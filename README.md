@@ -1,6 +1,7 @@
 # Simulazione dell’esperienza di Rutherford
 
-Questo progetto implementa una simulazione numerica dell’esperienza di scattering di particelle alfa sul bersaglio d’oro, come nell’esperimento storico di Rutherford.
+Questo progetto implementa una simulazione numerica dell’esperienza di scattering di particelle alfa su una o più lamine, come nell’esperimento storico di Rutherford.
+Tali lamine saranno composte da una percentuale di oro o argento(o una lega delle due) in misura voluta dall'utente stesso.
 
 Utilizzando tecniche Monte Carlo, il programma modella il comportamento casuale delle particelle alfa durante la loro interazione con le lamine metalliche, tenendo conto dei processi fisici coinvolti nella diffusione coloumbiana.
 
@@ -30,6 +31,13 @@ Queste semplificazioni servono a mantenere il modello computazionalmente efficie
 - Uso di librerie Python standard e di terze parti: `random`, `numpy`, `math`, `matplotlib` e `mpl_toolkits.mplot3d`.
 
 ---
+## Spiegazione dei codici presenti
+
+Nella cartella **progetti_python** sono contenuti diversi script organizzati in due sezioni principali:
+
+- **Caso generale:** codice flessibile che consente all’utente di configurare liberamente parametri come il numero di lamine, la distanza delle lamine dalla sorgente e la loro composizione.  
+- **Esempi simulazione:** simulazioni preimpostate dove molti parametri, come il numero e la posizione delle lamine, sono definiti di default per facilitare l’utilizzo e l’esecuzione rapida.  
+
 
 ## Requisiti di sistema e dipendenze
 
@@ -38,3 +46,5 @@ Queste semplificazioni servono a mantenere il modello computazionalmente efficie
 
 ```bash
 pip install numpy matplotlib
+
+
