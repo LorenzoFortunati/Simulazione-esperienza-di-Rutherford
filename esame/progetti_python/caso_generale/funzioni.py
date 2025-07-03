@@ -207,7 +207,8 @@ def generazione_particelle_alpha( distanza , numero ) :
     direzionez = np.array(direzionez)
     direzioney = np.array(direzioney)
 
-    #questi sotto posso direttamente crearli come np.array all'inizio credo.
+    #converto le liste in np.array per comodità
+    
     angolo_phi = np.array(angolo_phi)
     angolo_teta = np.array( angolo_teta )
 
@@ -262,9 +263,6 @@ def particelle_alfa_sopravvissute_fino_prima_lamina( numero , raggio , direzione
             angolo_phi_rimanente.append( angolo_phi[ i ] )
             angolo_teta_rimanente.append( angolo_teta[ i ] )
 
-            
-            #print( 1/np.cos(angolo_phi[i]) , "\n") #tutti all'incirca confrontabili con 1--->va bene e non fa esplodere z all'infinito
-            
 
             y.append( direzioney[ i ] )
             z.append( direzionez[ i ] )
@@ -369,6 +367,7 @@ def posizione_lamine_lungo_x( ) :
     array_che_definisce_la_distanza_di_tutte_le_lamine = []
 
     #decido il numero di lamine per l'esperimento
+    
     modifica = "si"
     while( modifica == "si" ):
             
@@ -377,7 +376,6 @@ def posizione_lamine_lungo_x( ) :
 
         #creo l'array che ha per elementi la distanza di ogni lamina dal foro
 
-        
         for i in range( 0 , numero_lamine , 1 ) :
             
             distanza = input(f"\nSi inserisca la distanza in centimetri della lamina {i + 1} dal foro, avendo cura che le lamine rientrino tutte in un range compreso in 50cm: ")
@@ -422,7 +420,7 @@ def posizione_lamine_lungo_x( ) :
 
 #creo un array con la sostanza delle varie lamine tra oro o argento.
 
-def array_sostanze_lamine( numero_lamine ) : #posso mettere direttamente dentro questa funzione se l'atomo con cui avviene la deflessione è oro o argento
+def array_sostanze_lamine( numero_lamine ) : 
 
     """
     Descrizione
@@ -577,15 +575,12 @@ def angolo_deflessione( numero_lamine , energia_in_joule , numero_atomico ) : #p
     
     """
 
-
-    #creo un array con tutti i possibili valori dell'angolo theta che può assumere, non considerando lo 0 perchè il parametro d'impatto divergerebbe
-    
+    #inizializzo delle variabili
 
     costante = cost / energia_in_joule
     deflessione = []
     numeri = [ 1 , 2 ]
-
-    #inizializzo dei valori
+    
     parametro_impatto = 0
     angolo = 0
     
@@ -598,7 +593,7 @@ def angolo_deflessione( numero_lamine , energia_in_joule , numero_atomico ) : #p
 
 
         media = costante * ( 10 ** 2 ) 
-        sigma = media / 10 #scelto a caso senza criterio---->rivedere
+        sigma = media / 10 
 
         parametro_impatto =  np.random.normal( loc = media  , scale = sigma  , size = None ) #mettendo size = none, ricevo solo un parametro alla volta
 
@@ -667,12 +662,10 @@ def interazione_particelle_lamine( angolo_deflessione , posizione_lamine , numer
     rz = 0
 
 
-    #inizializzo valori comodi--->ho le coordinate cartesiane delle particelle sulla prima lamina.
+    #inizializzo valori comodi
 
     y0 = posizione_lamine[0] * math.tan( angolo_phi )
     z0 = posizione_lamine[0] / ( math.tan( angolo_teta ) * math.cos( angolo_phi ) )
-
-    #print( 1 / ( math.tan( angolo_teta )) )
 
     #inizializzo dei valori comodi per il ciclo while
 
@@ -719,7 +712,7 @@ def interazione_particelle_lamine( angolo_deflessione , posizione_lamine , numer
 
 
         #teta=angolo tra r ed z ( r e piano xy equivalentemente )
-        teta = math.acos( rz / modulo_r ) #( ( modulo_r0 * math.cos(angolo_teta_0) ) + ( modulo_rf * math.cos(angolo_teta_f )) ) / modulo_r
+        teta = math.acos( rz / modulo_r )
         
         #phi = angolo giacente nel piano xy
         phi = math.atan2( ry , posizione_lamine[i+1] )
@@ -789,6 +782,8 @@ def creazione_schermo_sensibile_circolare( array_che_definisce_la_distanza_di_tu
         altezza_schermo : numero che definisce l'altezza dello schermo sensibile
 
     """
+    
+    #inizializzo dei valori utili
     
     modifica = "si"
 
@@ -888,6 +883,8 @@ def ultima_interazione( x0 , y0 , z0 , angolo_deflesso , numero_lamine, raggio_s
         z : parametro che mi definisce la posizione lungo z della particella quando si trova sullo schermo sensibile
 
     """
+
+    #inizializzo una variabile
 
     angolo_teta_f = 0
 
