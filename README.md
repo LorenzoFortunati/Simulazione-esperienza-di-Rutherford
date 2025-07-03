@@ -31,6 +31,13 @@ Queste semplificazioni servono a mantenere il modello computazionalmente efficie
 - Uso di librerie Python standard e di terze parti: `random`, `numpy`, `math`, `matplotlib` e `mpl_toolkits.mplot3d`.
 
 ---
+## Spiegazione dei codici presenti
+
+Nella cartella **progetti_python** sono contenuti diversi script organizzati in due sezioni principali:
+
+- **Caso generale:** codice flessibile che consente all’utente di configurare liberamente parametri come il numero di lamine, la distanza delle lamine dalla sorgente e la loro composizione.  
+- **Esempi simulazione:** simulazioni preimpostate dove molti parametri, come il numero e la posizione delle lamine, sono definiti di default per facilitare l’utilizzo e l’esecuzione rapida.  
+
 
 ## Requisiti di sistema e dipendenze
 
@@ -39,3 +46,5 @@ Queste semplificazioni servono a mantenere il modello computazionalmente efficie
 
 ```bash
 pip install numpy matplotlib
+
+
