@@ -1,6 +1,7 @@
 # Simulazione dell’esperienza di Rutherford
 
-Questo progetto implementa una simulazione numerica dell’esperienza di scattering di particelle alfa sul bersaglio d’oro, come nell’esperimento storico di Rutherford.
+Questo progetto implementa una simulazione numerica dell’esperienza di scattering di particelle alfa su una o più lamine, come nell’esperimento storico di Rutherford.
+Tali lamine saranno composte da una percentuale di oro o argento(o una lega delle due) in misura voluta dall'utente stesso.
 
 Utilizzando tecniche Monte Carlo, il programma modella il comportamento casuale delle particelle alfa durante la loro interazione con le lamine metalliche, tenendo conto dei processi fisici coinvolti nella diffusione coloumbiana.
 
