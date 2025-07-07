@@ -1,4 +1,3 @@
-
 import random
 import numpy as np
 import math
@@ -95,12 +94,12 @@ def scelta_sorgente_radioattiva() :
 
         if scelta == "no" :
             
-            energia = input( "\ninserisci il valore dell'energia in MeV delle particelle alpha che si desidera, avendo cura di trovarsi in un range compreso tra 0.1 e 100 Mev:  \n")
+            energia = input( "\ninserisci il valore dell'energia in MeV delle particelle alpha che si desidera, avendo cura di trovarsi in un range compreso tra 1 e 50 Mev:  \n")
             energia = float( energia )
 
-            while( energia < 0.1 or energia > 100 ) :
+            while( energia < 1 or energia > 50 ) :
                 
-                print(f"\nreinserire dei valori compresi tra il range 0.1 e 100 Mev")
+                print(f"\nreinserire dei valori compresi tra il range 1 e 50 Mev")
                 energia = input( "\ninserisci il valore dell'energia in MeV delle particelle alpha che si desidera, avendo cura di trovarsi in un range compreso tra 0.1 e 100 Mev:  ")
                 energia = float( energia )
             
@@ -170,6 +169,7 @@ def generazione_particelle_alpha( distanza , numero ) :
     """
 
     #generazione di particelle alfa con distribuzione uniforme su tutto l'angolo solido
+
     angolo_phi = np.random.uniform( low=0, high=2*np.pi , size = numero )
     angolo_teta = np.random.uniform( low=0, high=np.pi , size = numero )
 
@@ -201,14 +201,14 @@ def generazione_particelle_alpha( distanza , numero ) :
             direzioney.append( y )
             direzionez.append( z )
 
-            #print( f"\ncoordinata y: {y}\ncoordinata z: {z}" )
-        
+            
+   
+    #converto le varie liste in array numpy     
     
     direzionez = np.array(direzionez)
     direzioney = np.array(direzioney)
 
-    #converto le liste in np.array per comodità
-    
+
     angolo_phi = np.array(angolo_phi)
     angolo_teta = np.array( angolo_teta )
 
@@ -258,11 +258,11 @@ def particelle_alfa_sopravvissute_fino_prima_lamina( numero , raggio , direzione
     for i in range( 0 , numero , 1 ) :
         
         confronto = ( ( direzioney[i] ** 2 ) + ( direzionez[i] ** 2 ) ) ** 0.5
+
         if  raggio > confronto :
 
             angolo_phi_rimanente.append( angolo_phi[ i ] )
-            angolo_teta_rimanente.append( angolo_teta[ i ] )
-
+            angolo_teta_rimanente.append( angolo_teta[ i ] )            
 
             y.append( direzioney[ i ] )
             z.append( direzionez[ i ] )
@@ -271,6 +271,7 @@ def particelle_alfa_sopravvissute_fino_prima_lamina( numero , raggio , direzione
 
     z = np.array(z)
     y = np.array(y)
+
     angolo_phi_rimanente = np.array( angolo_phi_rimanente )
     angolo_teta_rimanente = np.array( angolo_teta_rimanente )
   
@@ -316,7 +317,7 @@ def calcolo_coordinate_cartesiane_nota_x_e_angoli( lunghezza_x , numero , angolo
 
         #problema per z
 
-        mask2 =(( ( angolo_teta[i] == 0 ) or ( np.abs(angolo_teta[i] - np.pi )) < 1e-8 ) and ( ( np.abs(angolo_phi[i] - np.pi/2 )) < 1e-8 or ( np.abs(angolo_phi[i] - (3/2)*np.pi)) < 1e-8))
+        mask2 = ( ( ( angolo_teta[i] == 0 ) or ( np.abs(angolo_teta[i] - np.pi )) < 1e-8 ) and ( ( np.abs(angolo_phi[i] - np.pi/2 )) < 1e-8 or ( np.abs(angolo_phi[i] - (3/2)*np.pi)) < 1e-8))
    
         
         if mask1 or mask2 :
@@ -330,6 +331,8 @@ def calcolo_coordinate_cartesiane_nota_x_e_angoli( lunghezza_x , numero , angolo
             direzionez.append( z )
             direzioney.append( y )
 
+    #converto le liste in array numpy
+    
     direzioney = np.array( direzioney )
     direzionez = np.array( direzionez )
 
@@ -363,58 +366,54 @@ def posizione_lamine_lungo_x( ) :
         numero_lamine : parametro intero che definisce il numero di lamine scelto per l'esperimento e che corrisponde alla dimensione dell'array sopradefinito
     
     """
+
     numero_lamine = 0
     array_che_definisce_la_distanza_di_tutte_le_lamine = []
 
     #decido il numero di lamine per l'esperimento
+            
+    numero_lamine = input( "\nsi scriva il numero di lamine che si vogliono usare per l'esperimento: ")
+    numero_lamine = int( numero_lamine )
+
+    #creo l'array che ha per elementi la distanza di ogni lamina dal foro
+
     
-    modifica = "si"
-    while( modifica == "si" ):
-            
-        numero_lamine = input( "\nsi scriva il numero di lamine che si vogliono usare per l'esperimento: ")
-        numero_lamine = int( numero_lamine )
-
-        #creo l'array che ha per elementi la distanza di ogni lamina dal foro
-
-        for i in range( 0 , numero_lamine , 1 ) :
-            
-            distanza = input(f"\nSi inserisca la distanza in centimetri della lamina {i + 1} dal foro, avendo cura che le lamine rientrino tutte in un range compreso in 50cm: ")
-            distanza = float(distanza)
-
-            while( distanza > 50  or distanza < 0 ) :
-
-                distanza = input("\nil valore scelto per la lamina non va bene poichè fuori range.Si inserisca la distanza in centimetri della lamina {i + 1} dal foro, avendo cura che le lamine rientrino tutte in un range compreso in 50cm: ")
-            
-            distanza = distanza/100
-
-            array_che_definisce_la_distanza_di_tutte_le_lamine.append( distanza )
-            print(f"\nla distanza scelta per la lamina  { i + 1 }   è: { distanza } metri\n")
-
-        #converto ora la lista in array
-
-        array_che_definisce_la_distanza_di_tutte_le_lamine = np.array( array_che_definisce_la_distanza_di_tutte_le_lamine )
-
-        #tolgo eventuali doppioni
-
-        array_che_definisce_la_distanza_di_tutte_le_lamine = np.unique(array_che_definisce_la_distanza_di_tutte_le_lamine)
-        numero_lamine = len(array_che_definisce_la_distanza_di_tutte_le_lamine)
-
-        #così sono sicuro che le lamine siano in ordine crescente
-
-        print("\nNOTA-->se ad esempio la lamina 3 è posta prima della lamina 2, l'array con le distanze delle lamine verrà ordinato in ordine crescente per le stesse.\n")
-
-        array_che_definisce_la_distanza_di_tutte_le_lamine.sort()
-
-        #rifaccio vedere l'array ordinato con tutte le relative distanze
-
-        for i in range( 0 , numero_lamine , 1 ) :
-            
-            print(f"\nla distanza scelta per la lamina  { i + 1 }   è: { array_che_definisce_la_distanza_di_tutte_le_lamine[i] } metri\n")
-
+    for i in range( 0 , numero_lamine , 1 ) :
         
-        print(f"\nscrivere 'si' se si vuole modificare i parametri scelti.\nscrivere 'no' o qualsiasi altra cosa se vanno bene i valori scelti:")
-        modifica = input()
-    
+        distanza = input(f"\nSi inserisca la distanza in centimetri della lamina {i + 1} dal foro, avendo cura che le lamine rientrino tutte in un range compreso in 50cm: ")
+        distanza = float(distanza)
+
+        while( distanza > 50  or distanza < 0 ) :
+
+            distanza = input("\nil valore scelto per la lamina non va bene poichè fuori range.Si inserisca la distanza in centimetri della lamina {i + 1} dal foro, avendo cura che le lamine rientrino tutte in un range compreso in 50cm: ")
+            distanza = float( distanza )
+
+        distanza = distanza/100
+
+        array_che_definisce_la_distanza_di_tutte_le_lamine.append( distanza )
+        print(f"\nla distanza scelta per la lamina  { i + 1 }   è: { distanza } metri\n")
+
+    #converto ora la lista in array
+
+    array_che_definisce_la_distanza_di_tutte_le_lamine = np.array( array_che_definisce_la_distanza_di_tutte_le_lamine )
+
+    #tolgo eventuali doppioni
+
+    array_che_definisce_la_distanza_di_tutte_le_lamine = np.unique(array_che_definisce_la_distanza_di_tutte_le_lamine)
+    numero_lamine = len(array_che_definisce_la_distanza_di_tutte_le_lamine)
+
+    #così sono sicuro che le lamine siano in ordine crescente
+
+    print("\nNOTA-->se ad esempio la lamina 3 è posta prima della lamina 2, l'array con le distanze delle lamine verrà ordinato in ordine crescente per le stesse.\n")
+
+    array_che_definisce_la_distanza_di_tutte_le_lamine.sort()
+
+    #rifaccio vedere l'array ordinato con tutte le relative distanze
+
+    for i in range( 0 , numero_lamine , 1 ) :
+        
+        print(f"\nla distanza scelta per la lamina  { i + 1 }   è: { array_che_definisce_la_distanza_di_tutte_le_lamine[i] } metri\n")
+
     
     return array_che_definisce_la_distanza_di_tutte_le_lamine , numero_lamine
 
@@ -448,55 +447,52 @@ def array_sostanze_lamine( numero_lamine ) :
     oro_array = []
     argento_array = []
 
-    modifica = "si"
+    
 
-    while modifica == "si" :
+    sostanza = print("si scriva 'oro' se si vuole la lamina completamente di oro.\nsi scriva 'argento' se si vuole la lamina completamente di argento.\nsi scriva 'entrambe' se la si vuole mista: ")
 
-        sostanza = print("si scriva 'oro' se si vuole la lamina completamente di oro.\nsi scriva 'argento' se si vuole la lamina completamente di argento.\nsi scriva 'entrambe' se la si vuole mista: ")
+    for i in range( 0 , numero_lamine , 1 ) :
+        
+        sostanza = input(f"\nsi inserisca la sostanza della lamina   {i + 1} : " )
+        array_sostanza_lamine.append( sostanza )
+        print(f"\nla sostanza scelta per la lamina  {i + 1} è: {sostanza} ")
 
-        for i in range( 0 , numero_lamine , 1 ) :
+    #mi serve da stabilire la percentuale per le lamine miste
+
+    print("\nNOTA!---->verrà chiesta solo la percentuale dell'oro poiché quella dell'argento sarà complementare\n")
+
+    for i in range( 0 , numero_lamine , 1 ) :
+
+        if array_sostanza_lamine[i] == "entrambe":
+
+            sostanza_oro = input(f"si scriva per la lamina {i+1} quanto oro in percentuale si vuole utilizzare: ")
+            sostanza_oro = float(sostanza_oro)
+
+            sostanza_argento = (100 - sostanza_oro)/100
+            sostanza_oro = sostanza_oro / 100
+
             
-            sostanza = input(f"\nsi inserisca la sostanza della lamina   {i + 1} : " )
-            array_sostanza_lamine.append( sostanza )
-            print(f"\nla sostanza scelta per la lamina  {i + 1} è: {sostanza} ")
+            oro_array.append( sostanza_oro )
+            argento_array.append( sostanza_argento)
 
-        #mi serve da stabilire la percentuale per le lamine miste
+        if array_sostanza_lamine[i] == "oro" :
 
-        print("\nNOTA!---->verrà chiesta solo la percentuale dell'oro poiché quella dell'argento sarà complementare\n")
+            oro_array.append( 1 )
+            argento_array.append( 0 )
 
-        for i in range( 0 , numero_lamine , 1 ) :
+        if array_sostanza_lamine[ i ] == "argento" :
 
-            if array_sostanza_lamine[i] == "entrambe":
+            oro_array.append( 0 )
+            argento_array.append( 1 )
 
-                sostanza_oro = input(f"si scriva per la lamina {i+1} quanto oro in percentuale si vuole utilizzare: ")
-                sostanza_oro = float(sostanza_oro)
+        print("\n")
 
-                sostanza_argento = (100 - sostanza_oro)/100
-                sostanza_oro = sostanza_oro / 100
+    #converto le liste con array
 
-                
-                oro_array.append( sostanza_oro )
-                argento_array.append( sostanza_argento)
+    oro_array = np.array( oro_array )
+    argento_array = np.array( argento_array )
 
-            if array_sostanza_lamine[i] == "oro" :
 
-                oro_array.append( 1 )
-                argento_array.append( 0 )
-
-            if array_sostanza_lamine[ i ] == "argento" :
-
-                oro_array.append( 0 )
-                argento_array.append( 1 )
-
-            print("\n")
-
-        #converto le liste con array
-
-        oro_array = np.array( oro_array )
-        argento_array = np.array( argento_array )
-
-        print(f"\nscrivere 'si' se si vuole modificare i parametri scelti.\nscrivere 'no' o qualsiasi altra cosa se vanno bene i valori scelti:")
-        modifica = input()
 
     return oro_array , argento_array
 
@@ -552,7 +548,7 @@ def oro_o_argento( oro_array , numero_lamine ) :
 
     return numero_atomico 
     
-def angolo_deflessione( numero_lamine , energia_in_joule , numero_atomico ) : #per ogni particella ho un angolo di deflessione valido per tutte le lamine.
+def angolo_deflessione( numero_lamine , energia_in_joule , numero_atomico , energia_mev) : #per ogni particella ho un angolo di deflessione valido per tutte le lamine.
 
     """
     Descrizione
@@ -566,7 +562,7 @@ def angolo_deflessione( numero_lamine , energia_in_joule , numero_atomico ) : #p
         numero_lamine : parametro che serve per definire il numero di lamine dell'esperimento
         energia_joule : energia in joule delle particelle della sorgente 
         numero_atomico : array con dimensione pari a numero_lamine che ha come elementi il numero atomico dell'atomo con il quale la particella alfa ha l'interazione.
-    
+        energia_mev : energia in Mev delle particelle della sorgente
         
     Restituisce
     -----------
@@ -575,58 +571,46 @@ def angolo_deflessione( numero_lamine , energia_in_joule , numero_atomico ) : #p
     
     """
 
-    #inizializzo delle variabili
+
+    #creo un array con tutti i possibili valori dell'angolo theta che può assumere, non considerando lo 0 perchè il parametro d'impatto divergerebbe
+    
 
     costante = cost / energia_in_joule
     deflessione = []
-    numeri = [ 1 , 2 ]
+
+    # Determina il range del parametro d'impatto b in base all'energia
+
+    if 10 <= energia_mev <= 50:
+
+        b_min, b_max = 1e-13, 1e-9
+
+    else:
+
+        b_min, b_max = 1e-14, 1e-10
     
-    parametro_impatto = 0
-    angolo = 0
+    for i in range( 0 , numero_lamine , 1 ):
+
+        # Campiona b con distribuzione uniforme nello spazio (p(b) ∝ b)
+
+        u = np.random.uniform(0, 1)
+        b = np.sqrt(u * (b_max**2 - b_min**2) + b_min**2)
+        
+        # Calcolo angolo di deflessione (formula di Rutherford)
+
+        valore = costante * numero_atomico[i] / b
+        theta = 2 * np.arctan(valore)
+        
+        deflessione.append( theta )
+
     
-    media = 0
-   
-    for i in range( 0 , numero_lamine , 1 ) :
-
-        #nell'esperimento, ho che la maggior parte delle particelle passa senza deflessione: teta deve essere prossimo a zero, ossia parametro_impatto>>costante
-        #con la scelta fatta per la media, ho che il parametro d'impatto assume sempre e comunque valori intorno a 10^-10 all'incirca, confrontabile col raggio atomico
-
-
-        media = costante * ( 10 ** 2 ) 
-        sigma = media / 10 
-
-        parametro_impatto =  np.random.normal( loc = media  , scale = sigma  , size = None ) #mettendo size = none, ricevo solo un parametro alla volta
-
-        #ho tutti angoli deflessi di pochissimo, come ci si aspetta dalle evidenze sperimentali dell'esperimento di rutherford.
-
-        caso = np.random.choice( numeri )
-
-        valore = costante * numero_atomico[i] / parametro_impatto
-
-        #valori di z negativi
-
-        if caso == 1 :
-            
-            angolo = np.pi/2 + ( 2 * np.arctan( valore )  )
-            deflessione.append(  angolo )
-
-
-        #valori di z positivi
-
-        if caso == 2 :
-            
-            angolo = np.pi/2 - ( 2 * np.arctan( valore )  )
-            deflessione.append( angolo )
-
-    #converto in array di tipo numpy
 
     deflessione = np.array(deflessione)
-
+    
     return deflessione
-
+    
 """DEFLESSIONE E SCHERMO SENSIBILE"""
 
-def interazione_particelle_lamine( angolo_deflessione , posizione_lamine , numero_lamine , angolo_phi , angolo_teta  ) :
+def interazione_particelle_lamine( angolo_deflessione, posizione_lamine, numero_lamine, angolo_phi, angolo_teta ) :
 
     """
     Descrizione
@@ -654,41 +638,36 @@ def interazione_particelle_lamine( angolo_deflessione , posizione_lamine , numer
 
     """
 
+
     x = 0 
     y = 0
     z = 0
-
     ry = 0 
     rz = 0
-
-
-    #inizializzo valori comodi
-
-    y0 = posizione_lamine[0] * math.tan( angolo_phi )
-    z0 = posizione_lamine[0] / ( math.tan( angolo_teta ) * math.cos( angolo_phi ) )
+    
+    
+    y0 = 0 
+    z0 = 0
 
     #inizializzo dei valori comodi per il ciclo while
-
+    
     angolo_teta_0 = angolo_teta
     angolo_phi_0 = angolo_phi
-
-    angolo_phi_f = np.random.normal( loc = 0  , scale = np.pi / 60  , size = None ) 
+    angolo_phi_f = np.random.uniform( 0 , 2*np.pi )
     angolo_teta_f = angolo_deflessione[0]
     
     #problema per y
-
+    
     mask_y0_ciclo = ( ( abs(angolo_phi_0 - np.pi/2) < 1e-8 ) or ( abs(angolo_phi_0 - np.pi*(3/2)) < 1e-8 ) ) 
-    mask_yf_ciclo = ( ( abs(angolo_phi_f - np.pi/2) < 1e-8 ) or ( abs(angolo_phi_f - np.pi*(3/2)) < 1e-8 ) ) 
-
+    
     #problema per z
 
     mask_z0_ciclo = (( ( angolo_teta_0 == 0 ) or ( np.abs(angolo_teta_0 - np.pi )) < 1e-8 ) and ( ( np.abs(angolo_phi_0 - np.pi/2 )) < 1e-8 or ( np.abs(angolo_phi_0 - (3/2)*np.pi)) < 1e-8))
-    mask_zf_ciclo = (( ( angolo_teta_f == 0 ) or ( np.abs(angolo_teta_f - np.pi )) < 1e-8 ) and ( ( np.abs(angolo_phi_f - np.pi/2 )) < 1e-8 or ( np.abs(angolo_phi_f - (3/2)*np.pi)) < 1e-8))
+    mask_zf_ciclo = ( ( np.abs(angolo_teta_f - 1.5 * np.pi) < 1e-8 ) or ( np.abs(angolo_teta_f - 0.5*np.pi )) < 1e-8 )
     
     #cosi facendo simulo la posizione della particella in ogni lamina.
    
-    mask_con_legge_demorgan = mask_yf_ciclo or mask_y0_ciclo or mask_z0_ciclo or mask_zf_ciclo
-
+    mask_con_legge_demorgan = mask_y0_ciclo or mask_z0_ciclo or mask_zf_ciclo
     i = 0
     
     while ( not( mask_con_legge_demorgan ) and ( i < numero_lamine - 1 ) ) : #i qui si ferma alla lamina numero "numero_lamine - 1" perchè poi all'ultimo ciclo coinciderà con numero_lamine
@@ -697,51 +676,54 @@ def interazione_particelle_lamine( angolo_deflessione , posizione_lamine , numer
         #gestione valori lamina successiva
         
         xf = posizione_lamine[ i+1 ] - posizione_lamine[ i ]
-        zf =  xf / ( math.tan( angolo_teta_f ) * math.cos( angolo_phi_f ) ) 
-        yf = xf * math.tan( angolo_phi_f )
-
+        r_tralamine_perpendicolare = xf * math.tan( angolo_teta_f )
+        zf = r_tralamine_perpendicolare * math.cos( angolo_phi_f )
+        yf = r_tralamine_perpendicolare * math.sin( angolo_phi_f )
         
         #gestione valori lamina antecedente
+        
         y0 = posizione_lamine[i] * math.tan( angolo_phi_0 )
-        z0 = posizione_lamine[i] / ( math.tan( angolo_teta_0 ) * math.cos( angolo_phi_0 ) )
+        z0 = posizione_lamine[i] / ( math.tan( angolo_teta_0 ) *  math.cos( angolo_phi_0 ) ) 
         
         #creo le coordinate del vettore posizione totale
+        
         ry = y0 + yf
         rz = z0 + zf 
         modulo_r = ( ( posizione_lamine[i+1]**2 ) + ( ry**2 ) + ( rz**2 ) ) ** ( 1/2 )
 
-
-        #teta=angolo tra r ed z ( r e piano xy equivalentemente )
-        teta = math.acos( rz / modulo_r )
+        #teta = angolo tra r ed z ( r e piano xy equivalentemente )-->mi serve per vedere se le particelle colpiscono o meno le lamine
         
-        #phi = angolo giacente nel piano xy
+        teta = math.acos( rz / modulo_r ) 
+        
+        #phi = angolo giacente nel piano xy--->mi serve per calcolare la posizione delle lamine
+        
         phi = math.atan2( ry , posizione_lamine[i+1] )
-
+        
         #assegno valori nuovi e ripeto il processo
+        
         angolo_teta_0 = teta
         angolo_phi_0 = phi
         i = i + 1
 
         #metto le condizioni da aggiornare
+        
         angolo_phi_f = random.uniform( 0 , 2*np.pi ) 
         angolo_teta_f = angolo_deflessione[i]
-
+        
         mask_y0_ciclo = ( ( abs(angolo_phi_0 - np.pi/2) < 1e-8 ) or ( abs(angolo_phi_0 - np.pi*(3/2)) < 1e-8 ) ) 
-        mask_yf_ciclo = ( ( abs(angolo_phi_f - np.pi/2) < 1e-8 ) or ( abs(angolo_phi_f - np.pi*(3/2)) < 1e-8 ) ) 
-
         mask_z0_ciclo = (( ( angolo_teta_0 == 0 ) or ( np.abs(angolo_teta_0 - np.pi )) < 1e-8 ) and ( ( np.abs(angolo_phi_0 - np.pi/2 )) < 1e-8 or ( np.abs(angolo_phi_0 - (3/2)*np.pi)) < 1e-8))
-        mask_zf_ciclo = (( ( angolo_teta_f == 0 ) or ( np.abs(angolo_teta_f - np.pi )) < 1e-8 ) and ( ( np.abs(angolo_phi_f - np.pi/2 )) < 1e-8 or ( np.abs(angolo_phi_f - (3/2)*np.pi)) < 1e-8))
-    
-        mask_con_legge_demorgan = mask_yf_ciclo or mask_y0_ciclo or mask_z0_ciclo or mask_zf_ciclo
+        mask_zf_ciclo = ( ( np.abs(angolo_teta_f - 1.5 * np.pi) < 1e-8 ) or ( np.abs(angolo_teta_f - 0.5*np.pi )) < 1e-8 )
+                            
+        
+        mask_con_legge_demorgan =  mask_y0_ciclo or mask_z0_ciclo or mask_zf_ciclo
 
     #se si verifica questa condizione, allora ho avuto una divisione per zero--->escludo queste particelle
-
+   
     if ( ( i == numero_lamine - 1 ) and ( not( mask_con_legge_demorgan ) ) ) :
-
+   
         x = posizione_lamine[i]
         y = ry
         z = rz
-
 
     else :
 
@@ -750,9 +732,14 @@ def interazione_particelle_lamine( angolo_deflessione , posizione_lamine , numer
         z = 10000
 
     #restituisco le posizioni finali quando la particella deve fare l'ultima deflessione con l'ultima lamina e poi ha il foro.
+    
+    return x, y, z
 
-    return x , y , z 
 
+
+
+
+    
 
 def creazione_schermo_sensibile_circolare( array_che_definisce_la_distanza_di_tutte_le_lamine , numero_lamine ) :
 
@@ -782,8 +769,6 @@ def creazione_schermo_sensibile_circolare( array_che_definisce_la_distanza_di_tu
         altezza_schermo : numero che definisce l'altezza dello schermo sensibile
 
     """
-    
-    #inizializzo dei valori utili
     
     modifica = "si"
 
@@ -816,6 +801,7 @@ def creazione_schermo_sensibile_circolare( array_che_definisce_la_distanza_di_tu
 
 
         #converto in metri
+
         altezza_pixel = altezza_pixel / 100 
         base_pixel = base_pixel / 100
 
@@ -870,7 +856,7 @@ def ultima_interazione( x0 , y0 , z0 , angolo_deflesso , numero_lamine, raggio_s
         x0 : numero che definisce la posizione della particella lungo x sull'ultima lamina prima che avvenga l'interazione.
         y0 : numero che definisce la posizione della particella lungo y sull'ultima lamina prima che avvenga l'interazione.
         z0 : numero che definisce la posizione della particella lungo z sull'ultima lamina prima che avvenga l'interazione.
-        angolo_deflesso : angolo di deflessione che la particella ha con l'ultima lamina.
+        angolo_deflesso : angolo di deflessione che la particella ha dopo l'ultima lamina.
         numero_lamine : parametro che serve per definire il numero di lamine dell'esperimento.
         raggio_schermo : numero che definisce il raggio dello schermo sensibile.
         altezza_schermo : numero che definisce l'altezza dello schermo sensibile.
@@ -883,9 +869,6 @@ def ultima_interazione( x0 , y0 , z0 , angolo_deflesso , numero_lamine, raggio_s
         z : parametro che mi definisce la posizione lungo z della particella quando si trova sullo schermo sensibile
 
     """
-
-    #inizializzo una variabile
-
     angolo_teta_f = 0
 
     if numero_lamine > 1 :
@@ -897,124 +880,85 @@ def ultima_interazione( x0 , y0 , z0 , angolo_deflesso , numero_lamine, raggio_s
         angolo_teta_f = angolo_deflesso
 
     #inizializzo dei valori per le coordinate
+
     x = 0
     y = 0 
     z = 0
-
     xf = 0 
     yf = 0
     zf = 0
 
-    zero_cento = np.arange( 1 , 101 )
-    caso = np.random.choice( zero_cento )
+    angolo_phi = np.random.uniform( 0 , 2*np.pi )
+
+    #problema y
     
-    #caso particelle non deflesse ai lati
-
-    if ( ( caso > 1 ) and ( caso <= 100 ) ) :
+    mask_yf = ( ( np.abs(angolo_phi - np.pi/2) < 1e-8 ) or ( np.abs(angolo_phi - (3/2)*np.pi) < 1e-8 ) )
     
-        #angolo_phi = np.pi/2 
-
-        angolo_phi = np.random.normal( loc = 0  , scale = np.pi / 60  , size = None ) 
-
-
-        #problema y
-
-        mask_yf = ( ( np.abs(angolo_phi - np.pi/2) < 1e-8 ) or ( np.abs(angolo_phi - (3/2)*np.pi) < 1e-8 ) )
     
-        #print(angolo_phi , angolo_teta_f , "\n")
+    #problema z
+    
+    mask_zf = ( ( angolo_teta_f == 0 ) or ( np.abs(angolo_teta_f - np.pi )) < 1e-8 ) 
+    
+    #con questa condizione, le particelle vengono comunque rilevate
+
+    if( not(mask_yf ) and not(mask_zf )) :
         
-        #problema z
-
-        mask_zf = (( ( angolo_teta_f == 0 ) or ( np.abs(angolo_teta_f - np.pi )) < 1e-8 ) and ( ( np.abs(angolo_phi - np.pi/2 )) < 1e-8 or ( np.abs(angolo_phi - (3/2)*np.pi)) < 1e-8))
+        #equazione per trovare xf, ossia la posizione x della particella sullo schermo circolare rispetto all'ultima lamina.
         
-        #con questa condizione, le particelle vengono comunque rilevate
-
-
-        if( not(mask_yf ) and not(mask_zf )) :
+        a = 1 + (math.tan(angolo_teta_f) * math.sin(angolo_phi ))**2
+        b = 2* (x0 + math.tan(angolo_teta_f) * math.sin(angolo_phi *y0 ))
+        c = x0**2 + y0**2 - raggio_schermo**2 
+       
+        coefficienti = [ a , b , c ]
+        soluzioni = np.roots( coefficienti )
+        
+        for soluzione_positiva in soluzioni :
             
-            #ho il modulo finale delle particelle, ossia raggio_schermo, così impongo che debbano stare su tale schermo
-
-
-            x = raggio_schermo * math.cos( angolo_phi )
-            y = raggio_schermo * math.sin( angolo_phi ) 
-
-            xf = x - x0    
+            discriminante = b**2 - 4*a*c
+          
+            #prendo la soluzione positiva perchè lo schermo sensibile è posto dopo le lamine--->la soluzione negativa è per lo schermo sensibile posto prima delle lamine.
             
-            zf = xf / ( math.tan( angolo_teta_f ) * math.cos( angolo_phi ) )
-
-            z = z0 + zf
-
+            if soluzione_positiva > 0 and discriminante >= 0 :
+                
+                xf = soluzione_positiva
             
-            
-            if np.abs(z) > altezza_schermo/2 : 
-
-                #mettendo questi valori alti, ho che le particelle non vengono rilevate perchè sparate via.
-                x = 10000
-                y = 10000
-                z = 10000
-
+                #ho il modulo finale delle particelle, ossia raggio_schermo, così impongo che debbano stare su tale schermo
+                
+                yf = xf*math.tan(angolo_teta_f)*math.sin(angolo_phi)
+                zf = xf*math.tan(angolo_teta_f)*math.cos(angolo_phi)
+                x = xf + x0
+                y = yf + y0
+                z = zf + z0 
+    
+                
+                if np.abs(z) > altezza_schermo/2 : 
+                   
+                    #mettendo questi valori alti, ho che le particelle non vengono rilevate perchè sparate via.
+                   
+                    x = 10000
+                    y = 10000
+                    z = 10000
+                
+                else :
+                    
+                    #conosco quindi la posizione delle particelle sullo schermo sensibile
+                    
+                    pass
             else :
                 
-                #conosco quindi la posizione delle particelle sullo schermo sensibile
+                #se non ho soluzioni positive, allora significa che la particella non viene rivelata.
                 
-                pass
-                
-        else:
-
-            x = 10000
-            y = 10000
-            z = 10000
-
-    #con quest'ultima condizione, anche se la particella è regolare in y, assumo che abbia avuto un'interazione con una lamina generica che l'ha fatta divergere in y e quindi l'ha fatta deviare di 90gradi circa
-    #questo per simulare al meglio rutherford, che almeno una particella su 100 veniva deviata di tantissimo
-
-    if caso == 1 :
-
-        #problema z
-
-        mask_zf = (( ( angolo_teta_f == 0 ) or ( np.abs(angolo_teta_f - np.pi )) < 1e-8 ) and ( ( np.abs(angolo_phi - np.pi/2 )) < 1e-8 or ( np.abs(angolo_phi - (3/2)*np.pi)) < 1e-8))
+                x = 100000
+                y = 100000
+                z = 100000
+            
+    else:
         
-        if not mask_zf :
-            
-            #qui creo casi in cui venga deviata o verso 90 gradi, o verso 270
-
-            pos_neg = [ np.pi/2 , (3/2)*np.pi ]
-            pos_neg = np.array( pos_neg )
-            angolo_phi = np.random.choice(pos_neg)
-
-            angolo_phi = np.random.normal( loc = angolo_phi , scale = np.pi / 30  , size = None ) 
-
-            x = raggio_schermo * math.cos( angolo_phi )
-            y = raggio_schermo * math.sin( angolo_phi ) 
-
-            yf = y - y0    
-            
-            zf = yf / ( math.tan( angolo_teta_f ) * math.sin( angolo_phi ) )
-
-            z = z0 + zf
-
-            if np.abs(z) > altezza_schermo/2 : 
-
-                #mettendo questi valori alti, ho che le particelle non vengono rilevate perchè sparate via.
-                x = 10000
-                y = 10000
-                z = 10000
-
-            else :
-                
-                #conosco quindi la posizione delle particelle sullo schermo sensibile
-                
-                pass
-                
-        else:
-
-            x = 10000
-            y = 10000
-            z = 10000
-
+        x = 10000
+        y = 10000
+        z = 10000
+    
     return x , y , z
-    
-   
 
 """RILEVAZIONE PARTICELLE"""
 
@@ -1106,6 +1050,7 @@ def rilevazione_particelle ( posizione_x , posizione_y , posizione_z , raggio_sc
     for i in range( 0 , numero_lamine , 1 ) :
 
         # Coordinate dei 4 vertici del rettangolo piano in yz (a x costante)
+
         y_lamina = np.array([-larghezza_lamina/2, larghezza_lamina/2, larghezza_lamina/2, -larghezza_lamina/2, -larghezza_lamina/2])
         z_lamina = np.array([-altezza_lamina/2, -altezza_lamina/2, altezza_lamina/2, altezza_lamina/2, -altezza_lamina/2])
         x_lamina = np.full_like(y_lamina, posizione_lamine[i] )
@@ -1113,11 +1058,6 @@ def rilevazione_particelle ( posizione_x , posizione_y , posizione_z , raggio_sc
         ax.plot( x_lamina , y_lamina , z_lamina , color="blue")
 
     ax.plot( [] , [] , [] , color="blue" , label = "lamina")
-
-
-
-
-
 
     #aggiungo il foro circolare
     
@@ -1135,9 +1075,9 @@ def rilevazione_particelle ( posizione_x , posizione_y , posizione_z , raggio_sc
 
 
     #Etichette
-    ax.set_xlabel('Asse X (lunghezza del cilindro)')
+    ax.set_xlabel('Asse X (raggio/circonferenza)')
     ax.set_ylabel('Asse Y (raggio/circonferenza)')
-    ax.set_zlabel('Asse Z (raggio/circonferenza)')
+    ax.set_zlabel('Asse Z (lunghezza del cilindro)')
     ax.set_title('Schermo sensibile cilindrico con asse parallelo a Z')
     ax.legend()
 

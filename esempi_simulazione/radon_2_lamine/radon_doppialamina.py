@@ -1,4 +1,3 @@
-
 import random
 import numpy as np
 import math
@@ -7,7 +6,9 @@ from matplotlib import colors
 import math
 from mpl_toolkits.mplot3d import Axes3D 
 
+#aggiungo le funzioni importanti, che si trovano nella stessa directory
 
+import funzioni
 
 #valori importanti
 costante_dielettrica_vuoto = 8.9*10**(-12) #C2/(N·m2)
@@ -18,19 +19,14 @@ velocita_luce = 299792458 #m/s
 carica_elettroni_oro = carica_elettrone * 79
 carica_elettroni_argento = carica_elettrone * 47
 
-z_oro = 79
-z_argento = 47
-
 raggio_atomico = 10**(-10) #metri
 
 
 cost = ( carica_elettrone ** 2 ) / ( 2 * np.pi * costante_dielettrica_vuoto )
 
-#aggiungo il pathname e il percorso alla cartella dove ci sono tutti i file
 
-import funzioni
 
-energia_mev = 7.7
+energia_mev = 5.5
 energia_joule = funzioni.mev_joule( energia_mev )
 
 print( "il corrispondente valore dell'energia in Joule scelto è di: " , energia_joule , " J" )
@@ -105,13 +101,23 @@ print(f"\nil numero di particelle sopravvissute dopo il foro è di: { dimensione
 
 #creo l'array che definisce la distanza di tutte le lamine
 
-array_che_definisce_la_distanza_di_tutte_le_lamine , numero_lamine = funzioni.posizione_lamine_lungo_x( ) 
+modifica = "si"
 
-array_che_definisce_la_distanza_di_tutte_le_lamine = array_che_definisce_la_distanza_di_tutte_le_lamine + distanza #distanza delle lamine rispetto all'origine
+while modifica == "si" :
+
+    array_che_definisce_la_distanza_di_tutte_le_lamine , numero_lamine = funzioni.posizione_lamine_lungo_x( ) 
+    print(f"\nscrivere 'si' se si vuole modificare i parametri scelti.\nscrivere 'no' o qualsiasi altra cosa se vanno bene i valori scelti:")
+    modifica = input()
+
+#distanza delle lamine rispetto all'origine
+
+array_che_definisce_la_distanza_di_tutte_le_lamine = array_che_definisce_la_distanza_di_tutte_le_lamine + distanza 
 
 distanza_ultima_lamina = array_che_definisce_la_distanza_di_tutte_le_lamine[ numero_lamine-1 ]
 
-oro_array = np.array(z_oro)
+#creo gli array che indicano la percentuale di oro e argento in ogni lamina
+
+oro_array , argento_array = funzioni.array_sostanze_lamine( )
 
 
 
@@ -130,46 +136,62 @@ dimensione = len(yy)
 
 raggio_schermo , numero_divisioni_circonferenza , base_pixel , altezza_pixel , divisione_altezza , altezza_schermo = funzioni.creazione_schermo_sensibile_circolare( array_che_definisce_la_distanza_di_tutte_le_lamine , numero_lamine )
 
-    
-for i in range( 0 , dimensione , 1 ) :
+
+for i in range( 0 , dimensione , 1 ) : #si ricorda che dimensione=numero particelle d'interesse.
+
+    phiii = angolo_phi[i]
+    tetaaa = angolo_teta[i]
 
     #atomo rispetto al quale avviene la deflessione per la particella i-esima
-    numero_atomico = oro_array
+    numero_atomico = funzioni.oro_o_argento( oro_array , numero_lamine )
 
     #deflessione particella i-esima
-    angolo_deflesso = funzioni.angolo_deflessione( numero_lamine, energia_joule , numero_atomico )
-
-    #print( angolo_deflesso , "\n" )
-
+    angolo_deflesso = funzioni.angolo_deflessione( numero_lamine, energia_joule , numero_atomico , energia_mev )
     
-    # y0 , z0 saranno qui la posizione lungo y e z della particella sulla prima lamina e prima che avvenga l'interazione con quest'ultima.
-    z0 = zz[i]
-    y0 = yy[i]
+    #print( angolo_deflesso , "ciao\n")
+    #ora gestisco tramite la funzione interazione_particelle_lamine tutte le interazioni con tutte le lamine, tutto ciò per ogni particella.
+    x0 , y0 , z0 = funzioni.interazione_particelle_lamine( angolo_deflesso , array_che_definisce_la_distanza_di_tutte_le_lamine , numero_lamine , phiii , tetaaa  )
+
+
+    maskx0 = ( np.abs(x0) < raggio_schermo )
+    masky0 = ( np.abs(y0) < raggio_schermo )
+    maskz0 = ( np.abs(z0) < altezza_schermo/2 )
+
+
+    #mettere gli and al posto dell'or in caso
+    masktot0 = bool(maskx0) and bool(masky0) and bool(maskz0)
+
+    #gestisco ora l'ultima interazione
+
+
+
+    if  masktot0 == True :
     
-    #print(f"\necco il valore di z0 nella funzione principale: {z0}")
+        x , y , z = funzioni.ultima_interazione( posizione_lamina_finale , y0 , z0 , angolo_deflesso , numero_lamine ,  raggio_schermo , altezza_schermo )
 
-    x , y , z = funzioni.ultima_interazione( posizione_lamina_finale , y0 ,  z0 , angolo_deflesso , numero_lamine , raggio_schermo, altezza_schermo )
+        maskx = ( np.abs(x) < raggio_schermo )
+        masky = ( np.abs(y) < raggio_schermo )
+        maskz = ( np.abs(z) < altezza_schermo/2 )
 
-    #print( x , y , z , "\n")
-    
-    maskx = ( np.abs(x) < raggio_schermo )
-    masky = ( np.abs(y) < raggio_schermo )
-    maskz = ( np.abs(z) < altezza_schermo/2 )
 
-    #print(type(maskx), type(masky), type(maskz))
+        
 
-    
-    masktot = bool(maskx) and bool(masky) and bool(maskz)
+        #mettere gli and al posto dell'or in caso
+        masktot = bool(maskx) and bool(masky) and bool(maskz)
+        
+        if masktot == True :
 
-    if masktot == True :
+            #salvo queste particelle
 
-        #salvo queste particelle
+            posizione_x.append( x )
+            posizione_y.append( y )
+            posizione_z.append( z )
 
-        posizione_x.append( x )
-        posizione_y.append( y )
-        posizione_z.append( z )
+        else : 
 
-    else :
+            pass
+
+    else : 
 
         pass
 
