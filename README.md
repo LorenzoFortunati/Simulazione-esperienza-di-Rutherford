@@ -18,7 +18,7 @@ Per mantenere la simulazione computazionalmente efficiente e al contempo fisicam
 - **Singola interazione per lamina:**  
   Non viene simulata l'interazione con molteplici nuclei all'interno della stessa lamina. Si assume che, qualora avvenga una deviazione, essa sia rappresentativa dell'interazione dominante e sufficiente a descrivere la traiettoria complessiva.
 
-- **Campionamento corretto del parametro d'impatto \( b \):**  
+- **Campionamento del parametro d'impatto \( b \):**  
   Il parametro d'impatto, ovvero la distanza minima tra la traiettoria della particella e il centro del nucleo bersaglio, è stato **campionato in modo da garantire una distribuzione uniforme in area**, coerente con la fisica dello scattering.  
   La formula adottata è:
   
