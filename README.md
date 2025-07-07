@@ -38,7 +38,7 @@ Per mantenere la simulazione computazionalmente efficiente e al contempo fisicam
 ---
 ## Spiegazione dei codici presenti
 
-Nella cartella **progetti_python** sono contenuti diversi script organizzati in due sezioni principali:
+Si hanno a disposizioni le seguenti cartelle:
 
 - **Caso generale:** codice flessibile che consente all’utente di configurare liberamente parametri come il numero di lamine, la distanza delle lamine dalla sorgente e la loro composizione.  
 - **Esempi simulazione:** simulazioni preimpostate dove molti parametri, come il numero e la posizione delle lamine, sono definiti di default per facilitare l’utilizzo e l’esecuzione rapida.  
